@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>百万粒子 WebGL Transform Feedback 对照</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <canvas id="stage" aria-label="GPU 与 CPU 粒子可视化画布"></canvas>
+
+  <main class="panel">
+    <h1>百万粒子系统</h1>
+    <p class="mode" id="mode">初始化中…</p>
+    <p class="warning" id="warnings" hidden></p>
+
+    <section class="group">
+      <label>后端
+        <select id="backend">
+          <option value="auto">自动选择</option>
+          <option value="tf">GPU：Transform Feedback</option>
+          <option value="texture">GPU：纹理计算</option>
+          <option value="cpu">CPU Worker + WebGL 渲染</option>
+        </select>
+      </label>
+      <label>粒子数量
+        <select id="count">
+          <option value="100000">10 万</option>
+          <option value="250000">25 万</option>
+          <option value="500000">50 万</option>
+          <option value="1000000" selected>100 万</option>
+          <option value="2000000">200 万（溢出/预算测试）</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="group sliders">
+      <label>重力 <output id="gravityValue"></output>
+        <input id="gravity" type="range" min="-1.2" max="0.6" step="0.01">
+      </label>
+      <label>风力 <output id="windValue"></output>
+        <input id="wind" type="range" min="-0.8" max="0.8" step="0.01">
+      </label>
+      <label>吸引强度 <output id="attractorValue"></output>
+        <input id="attractorStrength" type="range" min="0" max="1.4" step="0.01">
+      </label>
+      <label class="check"><input id="attractorEnabled" type="checkbox" checked> 启用吸引子</label>
+    </section>
+
+    <section class="actions">
+      <button id="pause">暂停</button>
+      <button id="reset">重置</button>
+      <button id="verify">一致性校验</button>
+      <button id="benchmark">性能对照</button>
+    </section>
+
+    <section id="stats" class="stats" aria-live="polite"></section>
+    <section id="benchmarkResult" class="result"></section>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
