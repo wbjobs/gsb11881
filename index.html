@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>百万 GPU 粒子 · Transform Feedback</title>
+    <link rel="stylesheet" href="./src/styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">WebGL2 · Transform Feedback · Web Worker · TypedArray</p>
+          <h1>100 万粒子 GPU 模拟</h1>
+          <p id="backendStatus" class="status">正在检测 WebGL2 transform feedback…</p>
+        </div>
+        <div class="badge-block">
+          <span class="badge" id="backendBadge">GPU</span>
+          <span class="badge subtle" id="memoryBadge">显存 —</span>
+        </div>
+      </header>
+
+      <section class="layout">
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <canvas id="particleCanvas" width="960" height="540" aria-label="GPU 或 CPU 粒子画布"></canvas>
+            <canvas id="overlayCanvas" width="960" height="540"></canvas>
+            <div class="loading" id="loading">正在 Worker 中生成确定性粒子数据…</div>
+          </div>
+          <p class="hint">拖拽吸引子移动；Alt/Option + 点击切换启用；点击画布空白处移动第一个吸引子。</p>
+        </div>
+
+        <aside class="panel">
+          <h2>控制</h2>
+          <label class="control">
+            <span>粒子数量 <b id="countLabel">1,000,000</b></span>
+            <input id="particleCount" type="range" min="1000" max="1000000" step="1000" value="1000000">
+          </label>
+
+          <div class="control two">
+            <label>重力 Y <output id="gravityValue">-9.8</output>
+              <input id="gravityY" type="range" min="-30" max="30" step="0.1" value="-9.8">
+            </label>
+            <label>风力 X <output id="windValue">2</output>
+              <input id="windX" type="range" min="-20" max="20" step="0.1" value="2">
+            </label>
+          </div>
+
+          <div class="control two">
+            <label>吸引强度 <output id="strengthValue">3000</output>
+              <input id="attractorStrength" type="range" min="0" max="9000" step="50" value="3000">
+            </label>
+            <label>阻尼 <output id="dragValue">0.08</output>
+              <input id="drag" type="range" min="0" max="0.8" step="0.01" value="0.08">
+            </label>
+          </div>
+
+          <div class="control two">
+            <label>弹性 <output id="restitutionValue">0.72</output>
+              <input id="restitution" type="range" min="0" max="1" step="0.01" value="0.72">
+            </label>
+            <label>点大小 <output id="pointSizeValue">1</output>
+              <input id="pointSize" type="range" min="0.5" max="3" step="0.1" value="1">
+            </label>
+          </div>
+
+          <div class="button-grid">
+            <button id="toggleRun" class="primary">暂停</button>
+            <button id="reset">重置</button>
+            <button id="addParticles">新增 50k</button>
+            <button id="removeParticles">减少 50k</button>
+            <button id="benchmark">CPU / GPU 基准</button>
+            <button id="validate">一致性校验</button>
+            <button id="forceCpu">模拟 TF 不支持</button>
+            <button id="forceOom">模拟显存不足</button>
+          </div>
+
+          <div class="result" id="resultBox" aria-live="polite">等待操作。</div>
+        </aside>
+      </section>
+
+      <section class="metrics-grid">
+        <article>
+          <span>后端 FPS</span>
+          <strong id="fpsValue">—</strong>
+        </article>
+        <article>
+          <span>模拟耗时</span>
+          <strong id="physicsValue">—</strong>
+        </article>
+        <article>
+          <span>GPU 耗时</span>
+          <strong id="gpuTimeValue">—</strong>
+        </article>
+        <article>
+          <span>主线程长任务</span>
+          <strong id="longTaskValue">0</strong>
+        </article>
+        <article>
+          <span>粒子吞吐</span>
+          <strong id="throughputValue">—</strong>
+        </article>
+        <article>
+          <span>缓冲内存</span>
+          <strong id="bufferMemoryValue">—</strong>
+        </article>
+      </section>
+
+      <section class="benchmark" id="benchmarkPanel" hidden>
+        <h2>性能对照</h2>
+        <div id="benchmarkResult"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
